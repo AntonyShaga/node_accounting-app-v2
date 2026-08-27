@@ -79,18 +79,24 @@ function createServer() {
     const userId = Number(req.params.id);
     const userName = req.body.name;
 
-    if (!userName) {
-      return res.status(400).send({ message: 'User name is required' });
-    }
-
     if (!userId) {
-      return res.status(400).send({ message: 'User id is required' });
+      return res.status(400).send({
+        message: 'User id is required',
+      });
     }
 
     const userIndex = users.findIndex((user) => user.id === userId);
 
     if (userIndex === -1) {
-      return res.status(404).send({ message: 'User does not exist' });
+      return res.status(404).send({
+        message: 'User does not exist',
+      });
+    }
+
+    if (!userName) {
+      return res.status(400).send({
+        message: 'User name is required',
+      });
     }
 
     users[userIndex].name = userName;
@@ -142,6 +148,24 @@ function createServer() {
       });
     }
 
+    if (!spentAt) {
+      return res.status(400).send({
+        message: 'Spent at is required',
+      });
+    }
+
+    if (!title) {
+      return res.status(400).send({
+        message: 'Title is required',
+      });
+    }
+
+    if (!amount) {
+      return res.status(400).send({
+        message: 'Amount is required',
+      });
+    }
+
     const user = users.find((us) => us.id === userId);
 
     if (!user) {
@@ -152,17 +176,18 @@ function createServer() {
 
     const newExpense = {
       id: nextExpenseId,
-      userId: userId,
-      spentAt: spentAt,
-      title: title,
-      amount: amount,
-      category: category,
-      note: note,
+      userId,
+      spentAt,
+      title,
+      amount,
+      category,
+      note,
     };
 
     expenses.push(newExpense);
     nextExpenseId++;
-    res.status(201).send(newExpense);
+
+    return res.status(201).send(newExpense);
   });
 
   app.get('/expenses/:id', (req, res) => {
@@ -209,13 +234,19 @@ function createServer() {
     const expenseId = Number(req.params.id);
 
     if (!expenseId) {
-      return res.status(400).send({ message: 'Expenses id is required' });
+      return res.status(400).send({
+        message: 'Expense id is required',
+      });
     }
 
-    const expenseIndex = expenses.findIndex((user) => user.id === expenseId);
+    const expenseIndex = expenses.findIndex(
+      (expense) => expense.id === expenseId,
+    );
 
     if (expenseIndex === -1) {
-      return res.status(404).send({ message: 'User does not exist' });
+      return res.status(404).send({
+        message: 'Expense does not exist',
+      });
     }
 
     expenses[expenseIndex] = {
